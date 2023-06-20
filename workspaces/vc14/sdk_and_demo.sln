@@ -21,8 +21,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "custom_baudrate", "custom_b
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "rplidar_osc", "rplidar_osc\rplidar_osc.vcxproj", "{5963E516-0E6B-49E0-B800-1CBEE86414B3}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "liboscpack", "liboscpack\liboscpack.vcxproj", "{AD6AAF0A-5ED9-44B5-A6F5-CE242FED2D87}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -71,14 +69,6 @@ Global
 		{5963E516-0E6B-49E0-B800-1CBEE86414B3}.Release|Win32.Build.0 = Release|Win32
 		{5963E516-0E6B-49E0-B800-1CBEE86414B3}.Release|x64.ActiveCfg = Release|Win32
 		{5963E516-0E6B-49E0-B800-1CBEE86414B3}.Release|x64.Build.0 = Release|Win32
-		{AD6AAF0A-5ED9-44B5-A6F5-CE242FED2D87}.Debug|Win32.ActiveCfg = Debug|Win32
-		{AD6AAF0A-5ED9-44B5-A6F5-CE242FED2D87}.Debug|Win32.Build.0 = Debug|Win32
-		{AD6AAF0A-5ED9-44B5-A6F5-CE242FED2D87}.Debug|x64.ActiveCfg = Debug|x64
-		{AD6AAF0A-5ED9-44B5-A6F5-CE242FED2D87}.Debug|x64.Build.0 = Debug|x64
-		{AD6AAF0A-5ED9-44B5-A6F5-CE242FED2D87}.Release|Win32.ActiveCfg = Release|Win32
-		{AD6AAF0A-5ED9-44B5-A6F5-CE242FED2D87}.Release|Win32.Build.0 = Release|Win32
-		{AD6AAF0A-5ED9-44B5-A6F5-CE242FED2D87}.Release|x64.ActiveCfg = Release|x64
-		{AD6AAF0A-5ED9-44B5-A6F5-CE242FED2D87}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -59,7 +59,7 @@ static inline void delay(sl_word_size_t ms){
 // Constants
 // TODO: Allow to configure the OSC port and host to send to
 static const char* OSC_SEND_ADDRESS = "127.0.0.1";
-static const int OSC_SEND_PORT = 7000;
+static const int OSC_SEND_PORT = 5678;
 
 void print_usage(int argc, const char * argv[]) {
     printf("LIDAR data grabber and OSC sender for SLAMTEC LIDAR.\n"
@@ -153,34 +153,40 @@ sl_result capture_and_display(ILidarDriver* drv) {
     return ans;
 }
 
-
+/**
+ * Captures LiDAR data and sends it over OSC.
+ * 
+ * Signature:
+ * `/lidar ,ff <angle> <distance>
+ * 
+ * It should send 16384 messages per frame.
+ */
 sl_result capture_and_send_osc_once(ILidarDriver* drv, UdpTransmitSocket& transmitSocket) {
-    sl_result ans;
-    sl_lidar_response_measurement_node_hq_t nodes[8192];
-    size_t count = _countof(nodes);
-    static const unsigned int OSC_OUTPUT_BUFFER_SIZE = 1024;
-    char oscMessageStringBuffer[OSC_OUTPUT_BUFFER_SIZE];
-    osc::OutboundPacketStream osc_outbound_packet_stream(oscMessageStringBuffer, OSC_OUTPUT_BUFFER_SIZE);
+    sl_lidar_response_measurement_node_hq_t nodes[8192]; // FIXME: Consider allocating this only once.
+    size_t numNodes = _countof(nodes);
+    static const unsigned int OSC_OUTPUT_BUFFER_SIZE = 256;
+    static char oscMessageStringBuffer[OSC_OUTPUT_BUFFER_SIZE];
+    static const sl_u32 timeout = 2000; // See RPlidarDriver.DEFAULT_TIMEOUT; // FIXME: Should we change the default timeout?
 
-    ans = drv->grabScanDataHq(nodes, count, 0);
-    if (SL_IS_OK(ans) || ans == SL_RESULT_OPERATION_TIMEOUT) {
-        drv->ascendScanData(nodes, count);
-        osc_outbound_packet_stream << osc::BeginMessage("/lidar");            
-        
-        for (int pos = 0; pos < (int) count; ++pos) {
-            bool is_sync = (nodes[pos].flag & SL_LIDAR_RESP_HQ_FLAG_SYNCBIT) ? true : false;
-            float theta = (nodes[pos].angle_z_q14 * 90.f) / 16384.f;
-            float dist = nodes[pos].dist_mm_q2 / 4.0f;
+    sl_result result = drv->grabScanDataHq(nodes, numNodes, timeout);
+    if (SL_IS_OK(result) || result == SL_RESULT_OPERATION_TIMEOUT) {
+        drv->ascendScanData(nodes, numNodes);
+        for (int pos = 0; pos < (int) numNodes; ++pos) {
+            // bool is_sync = (nodes[pos].flag & SL_LIDAR_RESP_HQ_FLAG_SYNCBIT) ? true : false;
+            float angle = (nodes[pos].angle_z_q14 * 90.f) / 16384.f;
+            float distance = nodes[pos].dist_mm_q2 / 4.0f;
+            osc::OutboundPacketStream osc_outbound_packet_stream(oscMessageStringBuffer, OSC_OUTPUT_BUFFER_SIZE);
+            osc_outbound_packet_stream << osc::BeginMessage("/lidar");
             // osc_outbound_packet_stream << is_sync;
-            osc_outbound_packet_stream << theta;
-            osc_outbound_packet_stream << dist;
+            osc_outbound_packet_stream << angle;
+            osc_outbound_packet_stream << distance;
+            osc_outbound_packet_stream << osc::EndMessage;
+            transmitSocket.Send(osc_outbound_packet_stream.Data(), osc_outbound_packet_stream.Size());
         }
-        osc_outbound_packet_stream << osc::EndMessage;
-        transmitSocket.Send(osc_outbound_packet_stream.Data(), osc_outbound_packet_stream.Size());
     } else {
-        printf("error code: %x\n", ans);
+        printf("error code: %x\n", result);
     }
-    return ans;
+    return result;
 }
 
 /**
@@ -188,6 +194,7 @@ sl_result capture_and_send_osc_once(ILidarDriver* drv, UdpTransmitSocket& transm
  * Runs in an infinite loop.
  */
 sl_result capture_and_send_osc(ILidarDriver* drv, UdpTransmitSocket& transmitSocket) {
+    
     while (true) {
         sl_result result = capture_and_send_osc_once(drv, transmitSocket);
         if (SL_IS_FAIL(result)) {
