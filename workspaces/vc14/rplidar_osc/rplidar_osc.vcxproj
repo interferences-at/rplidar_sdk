@@ -88,11 +88,33 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\app\rplidar_osc\main.cpp" />
+    <ClCompile Include="..\..\..\app\rplidar_osc\oscpack\ip\IpEndpointName.cpp" />
+    <ClCompile Include="..\..\..\app\rplidar_osc\oscpack\ip\win32\NetworkingUtils.cpp" />
+    <ClCompile Include="..\..\..\app\rplidar_osc\oscpack\ip\win32\UdpSocket.cpp" />
+    <ClCompile Include="..\..\..\app\rplidar_osc\oscpack\osc\OscOutboundPacketStream.cpp" />
+    <ClCompile Include="..\..\..\app\rplidar_osc\oscpack\osc\OscPrintReceivedElements.cpp" />
+    <ClCompile Include="..\..\..\app\rplidar_osc\oscpack\osc\OscReceivedElements.cpp" />
+    <ClCompile Include="..\..\..\app\rplidar_osc\oscpack\osc\OscTypes.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\rplidar_driver\rplidar_driver.vcxproj">
       <Project>{1f0aa469-8a8f-4ada-931d-967d2c5996df}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\app\rplidar_osc\oscpack\ip\IpEndpointName.h" />
+    <ClInclude Include="..\..\..\app\rplidar_osc\oscpack\ip\NetworkingUtils.h" />
+    <ClInclude Include="..\..\..\app\rplidar_osc\oscpack\ip\PacketListener.h" />
+    <ClInclude Include="..\..\..\app\rplidar_osc\oscpack\ip\TimerListener.h" />
+    <ClInclude Include="..\..\..\app\rplidar_osc\oscpack\ip\UdpSocket.h" />
+    <ClInclude Include="..\..\..\app\rplidar_osc\oscpack\osc\MessageMappingOscPacketListener.h" />
+    <ClInclude Include="..\..\..\app\rplidar_osc\oscpack\osc\OscException.h" />
+    <ClInclude Include="..\..\..\app\rplidar_osc\oscpack\osc\OscHostEndianness.h" />
+    <ClInclude Include="..\..\..\app\rplidar_osc\oscpack\osc\OscOutboundPacketStream.h" />
+    <ClInclude Include="..\..\..\app\rplidar_osc\oscpack\osc\OscPacketListener.h" />
+    <ClInclude Include="..\..\..\app\rplidar_osc\oscpack\osc\OscPrintReceivedElements.h" />
+    <ClInclude Include="..\..\..\app\rplidar_osc\oscpack\osc\OscReceivedElements.h" />
+    <ClInclude Include="..\..\..\app\rplidar_osc\oscpack\osc\OscTypes.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
